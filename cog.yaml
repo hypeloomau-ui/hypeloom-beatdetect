@@ -2,14 +2,16 @@
 # Build:  cog build -t hypeloom-beatdetect
 # Push:   cog login   &&   cog push r8.im/<your-username>/hypeloom-beatdetect
 #
-# madmom is picky about numpy/Cython — these pins are the known-good combo (Python 3.9).
-# If the PyPI madmom sdist fails to build, the `run` step falls back to git master.
+# madmom is picky about numpy/Cython - these pins are the known-good combo (Python 3.9).
+# build-essential gives gcc to compile madmom Cython extensions; git enables the source fallback.
 build:
   gpu: false
   python_version: "3.9"
   system_packages:
     - "ffmpeg"
     - "libsndfile1"
+    - "build-essential"
+    - "git"
   python_packages:
     - "numpy==1.23.5"
     - "scipy==1.10.1"
