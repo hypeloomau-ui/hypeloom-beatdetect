@@ -1,0 +1,25 @@
+# Replicate cog for Hypeloom beat-detection.
+# Build:  cog build -t hypeloom-beatdetect
+# Push:   cog login   &&   cog push r8.im/<your-username>/hypeloom-beatdetect
+#
+# madmom is picky about numpy/Cython — these pins are the known-good combo (Python 3.9).
+# If the PyPI madmom sdist fails to build, the `run` step falls back to git master.
+build:
+  gpu: false
+  python_version: "3.9"
+  system_packages:
+    - "ffmpeg"
+    - "libsndfile1"
+  python_packages:
+    - "numpy==1.23.5"
+    - "scipy==1.10.1"
+    - "Cython==0.29.36"
+    - "mido==1.2.10"
+    - "soundfile==0.12.1"
+    - "audioread==3.0.1"
+    - "librosa==0.10.1"
+    - "requests==2.31.0"
+  run:
+    # madmom must build AFTER numpy+Cython exist, with build isolation OFF so it sees them.
+    - "pip install --no-build-isolation madmom==0.16.1 || pip install --no-build-isolation 'git+https://github.com/CPJKU/madmom.git'"
+predict: "predict.py:Predictor"
