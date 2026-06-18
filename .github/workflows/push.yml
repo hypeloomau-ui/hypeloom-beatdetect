@@ -1,0 +1,35 @@
+name: Push beat-detector to Replicate
+
+# Run this manually from the GitHub "Actions" tab (Run workflow button).
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Replicate model as owner/name, e.g. hypeloomau-ui/hypeloom-beatdetect"
+        required: true
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Free up disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: false
+          swap-storage: false
+
+      - name: Set up Cog
+        uses: replicate/setup-cog@v2
+        with:
+          token: ${{ secrets.REPLICATE_API_TOKEN }}
+
+      - name: Build and push the model
+        run: cog push "r8.im/${{ github.event.inputs.model }}"
